@@ -29,9 +29,11 @@
     a set of Users  
     Each user has: a username, a password, a secret token, and a confirm flag  
   actions  
+  
     register (username: String, password: String): (user: User)  
       Requires: The user is not in the set of users and no user other user has the given username  
       Effects: Adds the user to the set of users with that username and password. Also generates a secret token for that user  and emails it to them. Sets the user's confirm flag to false.  
+    
     confirm (username: String, secret token: string):  
       Requires: The username is in the set of users. The secret token is equal to the secret token of that user. The confirm  flag is false.  
       Effects: Sets the user's confirm flag to true.  
