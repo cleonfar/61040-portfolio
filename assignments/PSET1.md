@@ -28,20 +28,18 @@
   state  
     a set of Users  
     Each user has: a username, a password, a secret token, and a confirm flag  
-  actions  
-  
+
+  Actions:  
+
     register (username: String, password: String): (user: User)  
       Requires: The user is not in the set of users and no user other user has the given username  
       Effects: Adds the user to the set of users with that username and password. Also generates a secret token for that user  and emails it to them. Sets the user's confirm flag to false.  
-    
     confirm (username: String, secret token: string):  
       Requires: The username is in the set of users. The secret token is equal to the secret token of that user. The confirm  flag is false.  
       Effects: Sets the user's confirm flag to true.  
-  
     authenticate (username: String, password: String): (user: User)  
       Requires: There is a user in the set with a matching username and password  
       Effect: Authenticates the sender of this action as the corresponding user  
-  
   3.  It must hold that all usernames are unique. This is preserved by preventing new users from registering with a username  that has already been used.  
 
 
@@ -54,7 +52,7 @@
   state:  
     A set of users  
     each user has an associated username, token, and permissions  
-  actions  
+  Actions:  
     register  (username: String, permissions: String): (user: User, token: String)
       Requires: The user is not in the set of users and no user other user has the given username  
       Effects: Adds the user to the set of users with that username and permission level.  
@@ -119,17 +117,14 @@
   
   
   
-  concept: 
-  purpose:   
-  principle:   
+  concept: URLShortener
+  purpose: To allow users create a short easily shareable link that redirects to the original longer URL.  
+  principle: After a user submits a long URL, a short url that redirects to the link is generated and given to the user    
   state:  
-    A set of users  
-    each user has an associated username, token, and permissions  
+    A set of links with:    
+    Original URLS
+    Short URLS
   actions  
-    register  (username: String, permissions: String): (user: User, token: String)
-      Requires: The user is not in the set of users and no user other user has the given username  
-      Effects: Adds the user to the set of users with that username and permission level.  
-      Also generates a token a returns it to the user.
-    authenticate (username: String, token: String): (user: User)  
-      Requires: There is a user in the set with a matching username and token  
-      Effect: Authenticates the sender of this action as the corresponding user  
+    Create URL(originalURL: String): (shortURL: String)  
+      Requires:   
+      Effect: Creates a unique short URL that redirects to the orginal URL  
