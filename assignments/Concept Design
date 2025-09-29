@@ -1,0 +1,91 @@
+concept AnimalIdentity 
+  purpose represent individual animals with persistent identifiers and core attributes  
+  principle  
+    a user registers animals to track them individually across their lifecycle;  
+    assigns each animal a unique tag and records identifying details;  
+    updates status to reflect key transitions such as sale, death, or transfer;  
+    and uses this identity to link the animal to other concepts like herd membership, production metrics, and lifecycle events.  
+
+  state  
+    a set of Animals with  
+      an owner User  
+      an id tag String  
+      a species String  
+      a breed String  
+      a sex Enum [male, female, unknown]  
+      a status Enum [alive, sold, deceased, transferred]  
+      a notes (Set of Strings)  
+      an optional birthDate Date  
+      an optional mother Animal  
+      an optional father Animal  
+      an optional set of offspring (Set of Animals)  
+
+  actions  
+    registerAnimal (owner: User, tag: String, species: String, breed: String, birthDate: Date, sex: Enum): (animal: Animal)  
+      effects create a new animal with this owner and attributes, status set to alive  
+
+    updateStatus (animal: Animal, status: Enum, notes: String)  
+      requires animal exists  
+      effects set the animal’s status to the new value and record optional notes  
+
+    editDetails (animal: Animal, species: String, breed: String, birthDate: Date, sex: Enum)  
+      requires animal exists  
+      effects update the animal’s identifying attributes  
+
+    viewAnimal (tag: Tag): (animal: Animal)  
+      requires an animal with this tag exists  
+      effects return the animal and its attributes  
+
+    listAnimals (owner: User): (animals: Set<Animal>)  
+      effects return all animals owned by this user  
+
+
+
+concept HerdGrouping [Animal]  
+  purpose: organize animals into dynamic groupings for operational and analytical purposes  
+  principle:  
+    a user creates herds to group animals based on location, purpose, or management strategy;  
+    adds or removes animals from herds as conditions change;  
+    merges herds when combining groups, or splits them to separate animals;  
+    moves animals between herds to reflect real-world transitions;  
+    and views herd composition and history to support planning and analysis.  
+
+  state  
+    a set of Herds with  
+      an owner User  
+      a name String  
+      a location String  
+      a set of Animals  
+
+
+  actions
+    createHerd (owner: User, name: String, location: String): (herd: Herd)
+      effects create a new herd with this owner, name, location, and no members
+
+    addAnimal (herd: Herd, animal: Animal)
+      requires herd exists and animal exists
+      effects add the animal to the herd and record an add event
+
+    removeAnimal (herd: Herd, animal: Animal)
+      requires herd exists and animal is a member
+      effects remove the animal from the herd and record a remove event
+
+    moveAnimal (source: Herd, target: Herd, animal: Animal)
+      requires both herds exist and animal is a member of source
+      effects remove the animal from source, add to target, and record a move event
+
+    mergeHerds (source: Herd, target: Herd)
+      requires both herds exist
+      effects move all animals from source to target, record a merge event, and archive source and target herd.
+
+    splitHerd (source: Herd, target: Herd, animals: Set<Animal>)
+      requires both herds exist and all animals are members of source
+      effects move specified animals from source to target and record a split event
+
+    viewComposition (herd: Herd): (animals: Set<Animal>)
+      requires herd exists
+      effects return current members of the herd
+
+    viewHistory (herd: Herd): (events: Set<HerdEvent>)
+      requires herd exists
+      effects return all events associated with this herd
